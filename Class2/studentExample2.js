@@ -20,19 +20,21 @@ function displayMap(students) {
         tdId.textContent = student.id;
         tr.appendChild(tdId);
 
+        // First name as plain text
         const tdName = document.createElement("td");
-        const nameButton = document.createElement("button");
-        nameButton.type = "button";
-        nameButton.className = "btn btn-link";
-        nameButton.textContent = student.lastname;
-        nameButton.onclick = function () {
-            viewStudent(student.id);
-        };
-        tdName.appendChild(nameButton);
+        tdName.textContent = student.name;
         tr.appendChild(tdName);
 
+        // Last name as a clickable link
         const tdLastName = document.createElement("td");
-        tdLastName.textContent = student.lastName || "";
+        const lastNameButton = document.createElement("button");
+        lastNameButton.type = "button";
+        lastNameButton.className = "btn btn-link";
+        lastNameButton.textContent = student.lastName || "";
+        lastNameButton.onclick = function () {
+            viewStudent(student.id);
+        };
+        tdLastName.appendChild(lastNameButton);
         tr.appendChild(tdLastName);
 
         const tdAge = createAgeColumn(student);
