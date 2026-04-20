@@ -20,16 +20,22 @@ function displayMap(students) {
         tdId.textContent = student.id;
         tr.appendChild(tdId);
 
+        // First name as plain text
         const tdName = document.createElement("td");
-        const nameButton = document.createElement("button");
-        nameButton.type = "button";
-        nameButton.className = "btn btn-link";
-        nameButton.textContent = student.name;
-        nameButton.onclick = function () {
+        tdName.textContent = student.name;
+        tr.appendChild(tdName);
+
+        // Last name as a clickable link
+        const tdLastName = document.createElement("td");
+        const lastNameButton = document.createElement("button");
+        lastNameButton.type = "button";
+        lastNameButton.className = "btn btn-link";
+        lastNameButton.textContent = student.lastName || "";
+        lastNameButton.onclick = function () {
             viewStudent(student.id);
         };
-        tdName.appendChild(nameButton);
-        tr.appendChild(tdName);
+        tdLastName.appendChild(lastNameButton);
+        tr.appendChild(tdLastName);
 
         const tdAge = createAgeColumn(student);
         tr.appendChild(tdAge);
@@ -90,21 +96,24 @@ function disabeEditDeleteButtons(id) {
 
 
 async function addNewStudent() {
-    let student = { id: 0, name: "", age: 0, major: "" };
+    let student = { id: 0, name: "", lastName: "", age: 0, major: "" };
     const nameInput = document.getElementById("nameInput");
+    const lastNameInput = document.getElementById("lastNameInput");
     const ageInput = document.getElementById("ageInput");
     const majorInput = document.getElementById("majorInput");
-    if (!nameInput.value || !ageInput.value || !majorInput.value) {
+    if (!nameInput.value || !lastNameInput.value || !ageInput.value || !majorInput.value) {
         alert("Please fill in all fields.");
         return;
     }
 
     student.id = 0; // ID will be assigned by the backend
     student.name = nameInput.value;
+    student.lastName = lastNameInput.value;
     student.age = parseInt(ageInput.value);
     student.major = majorInput.value;
     console.log("Added student:", student);
     nameInput.value = "";
+    lastNameInput.value = "";
     ageInput.value = "";
     majorInput.value = "";
     let newStudent = await createStudent(student);
@@ -163,6 +172,10 @@ function displaySearchResults(students) {
             };
             tdName.appendChild(nameButton);
             tr.appendChild(tdName);
+
+            const tdLastName = document.createElement("td");
+            tdLastName.textContent = student.lastName || "";
+            tr.appendChild(tdLastName);
             const tdAge = createAgeColumn(student);
             
             tr.appendChild(tdAge);
