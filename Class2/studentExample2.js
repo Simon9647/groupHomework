@@ -21,9 +21,9 @@ function displayMap(students) {
         tr.appendChild(tdId);
 
         // First name as plain text
-        const tdName = document.createElement("td");
-        tdName.textContent = student.name;
-        tr.appendChild(tdName);
+        const tdFirstName = document.createElement("td");
+        tdFirstName.textContent = student.firstName;
+        tr.appendChild(tdFirstName);
 
         // Last name as a clickable link
         const tdLastName = document.createElement("td");
