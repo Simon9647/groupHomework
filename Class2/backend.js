@@ -34,7 +34,7 @@ async function deleteStudentById(id) {
     }
 }
 
-async function updateStudent(student) {
+async function updateStudentAPI(student) {
     const response = await fetch(`${BASE_URL}/students/${student.id}`, {
         method: 'PUT',
         headers: {
@@ -50,6 +50,11 @@ async function updateStudent(student) {
         console.log(`Student with id: ${student.id} not found`);
         return null;
     }
+}
+
+// Alias for backward compatibility
+async function updateStudent(student) {
+    return updateStudentAPI(student);
 }
 
 async function searchStudentsByName(name) {
