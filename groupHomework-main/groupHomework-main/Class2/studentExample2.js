@@ -1,4 +1,3 @@
-
 init();
 
 async function init() { //populate the map with some initial data
@@ -20,21 +19,19 @@ function displayMap(students) {
         tdId.textContent = student.id;
         tr.appendChild(tdId);
 
-        // First name as plain text
-        const tdName = document.createElement("td");
-        tdName.textContent = student.name;
-        tr.appendChild(tdName);
-
-        // Last name as a clickable link
-        const tdLastName = document.createElement("td");
-        const lastNameButton = document.createElement("button");
-        lastNameButton.type = "button";
-        lastNameButton.className = "btn btn-link";
-        lastNameButton.textContent = student.lastName || "";
-        lastNameButton.onclick = function () {
+        const tdFirstName = document.createElement("td");
+        const nameButton = document.createElement("button");
+        nameButton.type = "button";
+        nameButton.className = "btn btn-link";
+        nameButton.textContent = student.firstName;
+        nameButton.onclick = function () {
             viewStudent(student.id);
         };
-        tdLastName.appendChild(lastNameButton);
+        tdFirstName.appendChild(nameButton);
+        tr.appendChild(tdFirstName);
+
+        const tdLastName = document.createElement("td");
+        tdLastName.textContent = student.lastName;
         tr.appendChild(tdLastName);
 
         const tdAge = createAgeColumn(student);
@@ -120,7 +117,7 @@ async function addNewStudent() {
     console.log("Created student:", newStudent);
 
     let students = await getStudents();
-    
+
     //Hide the modal after adding the student
     hideModal("addModal");
     displayMap(students);
@@ -163,18 +160,18 @@ function displaySearchResults(students) {
             tr.appendChild(tdId);
 
             const tdFirstName = document.createElement("td");
-            tdFirstName.textContent = student.firstName;
+            const nameButton = document.createElement("button");
+            nameButton.type = "button";
+            nameButton.className = "btn btn-link";
+            nameButton.textContent = student.firstName;
+            nameButton.onclick = function () {
+                viewStudent(student.id);
+            };
+            tdFirstName.appendChild(nameButton);
             tr.appendChild(tdFirstName);
 
             const tdLastName = document.createElement("td");
-            const lastNameButton = document.createElement("button");
-            lastNameButton.type = "button";
-            lastNameButton.className = "btn btn-link";
-            lastNameButton.textContent = student.lastName;
-            lastNameButton.onclick = function () {
-                viewStudent(student.id);
-            };
-            tdLastName.appendChild(lastNameButton);
+            tdLastName.textContent = student.lastName;
             tr.appendChild(tdLastName);
 
             const tdAge = createAgeColumn(student);
@@ -185,27 +182,9 @@ function displaySearchResults(students) {
             tr.appendChild(tdMajor);
 
             const tdEdit = document.createElement("td");
-            const editButton = document.createElement("button");
-            editButton.type = "button";
-            editButton.setAttribute("id", `editButton-${student.id}`);
-            editButton.className = "btn btn-primary btn-sm";
-            editButton.textContent = "Edit";
-            editButton.onclick = function () {
-                editStudent(student.id);
-            }
-            tdEdit.appendChild(editButton);
             tr.appendChild(tdEdit);
 
             const tdDelete = document.createElement("td");
-            const deleteButton = document.createElement("button");
-            deleteButton.type = "button";
-            deleteButton.setAttribute("id", `deleteButton-${student.id}`);
-            deleteButton.className = "btn btn-danger btn-sm";
-            deleteButton.textContent = "Delete";
-            deleteButton.onclick = function () {
-                deleteStudent(student.id);
-            };
-            tdDelete.appendChild(deleteButton);
             tr.appendChild(tdDelete);
 
             tableBody.appendChild(tr);
@@ -213,11 +192,10 @@ function displaySearchResults(students) {
     }
 }
 
-async function clearSearch() {
+function clearSearch() {
     const nameInput = document.getElementById("searchNameInput");
     nameInput.value = "";
-    let students = await getStudents();
-    displayMap(students);
+    displayMap();
 }
 
 async function fetchStudent(id) {
@@ -237,8 +215,6 @@ async function viewStudent(id) {
     const student = await fetchStudent(id);
     console.log("Fetch student result:", student);
     if (student) {
-        let headerText = document.getElementById("editModalLabel");
-        headerText.textContent = `View Student`;
         let btnEdit = document.getElementById("btnEdit");
         btnEdit.style.display = "none";
 
@@ -283,7 +259,7 @@ async function updateStudent() {
     student.age = parseInt(ageInput.value);
     student.major = majorInput.value;
     console.log("Updated student:", student);
-    let updatedStudent = await updateStudentAPI(student);
+    let updatedStudent = await updateStudent(student);
     console.log("Updated student result:", updatedStudent);
 
     let students = await getStudents();
@@ -295,8 +271,7 @@ async function deleteStudent(id) {
     let student = await fetchStudent(id);
     console.log("Fetch student result:", student);
     if (student) {
-        let fullName = `${student.firstName} ${student.lastName}`;
-        let confirmDelete = confirm(`Are you sure you want to delete student "${fullName}"?`);
+        let confirmDelete = confirm(`Are you sure you want to delete student "${student.firstName} ${student.lastName}"?`);
         console.log("Confirm delete:", confirmDelete);
         if (confirmDelete) {
             const result = await deleteStudentById(id);
